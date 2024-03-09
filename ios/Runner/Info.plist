@@ -24,6 +24,11 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!-- I added this for permission thingy -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow places_app to access your photos</string>
+	<key>NSCameraUsageDescription</key>
+	<string>places_app will like to access your camera</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
