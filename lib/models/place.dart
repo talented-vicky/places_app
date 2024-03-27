@@ -1,18 +1,30 @@
 import 'dart:io';
 
-class Location {
-  final String address;
-  final double lat, long;
-  Location({required this.lat, required this.long, this.address = ''});
-}
+import '../models/location.dart';
 
 class Place {
   final String title, id;
-  final Location location;
+  final Location? location;
   final File image;
-  Place(
-      {required this.title,
-      required this.id,
-      required this.location,
-      required this.image});
+
+  Place({
+    required this.title,
+    required this.id,
+    required this.location,
+    required this.image,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'image': image.toString(),
+      'location': null,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Place{title: $title, id: $id, location: $location, image: $image}';
+  }
 }

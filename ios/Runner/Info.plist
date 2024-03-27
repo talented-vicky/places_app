@@ -29,6 +29,12 @@
 	<string>Allow places_app to access your photos</string>
 	<key>NSCameraUsageDescription</key>
 	<string>places_app will like to access your camera</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location access required by places_app</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Constant Location access required by places_app</string>
+	<!-- addition ends here -->
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
