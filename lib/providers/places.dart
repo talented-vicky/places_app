@@ -27,6 +27,8 @@ class Places with ChangeNotifier {
 
     _places.add(place);
     notifyListeners();
+    // to ensure he _place is immediately updated after
+    // pushing into the list
 
     await PlacesDB.insertTable('places', place);
     // PlacesDB.insertTable('places', {
@@ -40,17 +42,18 @@ class Places with ChangeNotifier {
   // Future<List<Map<String, dynamic>>> fetchPlaces() async {
   Future<void> fetchPlaces() async {
     final data = await PlacesDB.getData('places');
-    // print(data);
-    _places = data.map((e) {
-      print(e['id']);
-      return Place(
-        id: e['id'],
-        title: e['title'],
-        location: null,
-        image: e['image'],
-      );
-    }).toList();
-    // print('hola');
+    print(data);
+    print(_places);
+    _places = data
+        .map((e) => Place(
+              id: e['id'],
+              title: e['title'],
+              location: null,
+              image: e['image'],
+            ))
+        .toList();
+    print(_places);
     notifyListeners();
+    print('finale'); // why does my code never get here???
   }
 }

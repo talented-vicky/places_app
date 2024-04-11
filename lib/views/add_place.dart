@@ -1,15 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
-import 'package:places_app/utility/location.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
+import '../views/google_maps.dart';
+import '../utility/ggl_location.dart';
 import '../providers/places.dart';
+import '../models/location.dart';
 
 class AddPlace extends StatefulWidget {
   static const routeName = '/add-place';
@@ -51,33 +54,60 @@ class _AddPlaceState extends State<AddPlace> {
 
     final finalImg = await File(_imagefile!.path).copy('${appDir.path}/$name');
     // image now copied to working directory
-    // _pickImg(finalImg);
     _imagefile = XFile(finalImg.path);
   }
 
-  Location location = Location();
+  // Future<bool> _serviceCheck() async {
+  //   bool isServiceEnabled;
 
-  // Future<bool> _permitLocation() async {
-  //   final result = await location.requestPermission();
-  //   return result == PermissionStatus.granted;
+  //   isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!isServiceEnabled) {
+  //     return Future.error('Location services disabled');
+  //   }
+  //   return isServiceEnabled;
   // }
 
-  // Future<LocationData> _getLocation() async {
-  Future<void> _getLocation() async {
-    // _permitLocation();
+  // Future<LocationPermission> _permissionCheck() async {
+  //   late LocationPermission permission;
+  //   final service = await _serviceCheck();
 
-    // final service = await location.serviceEnabled();
-    // if (!service) {
-    //   final bool res = await location.requestService();
-    //   if (res == true) {
-    //     print('service now enabled');
-    //   } else {
-    //     throw Exception('service not enabled');
-    //   }
-    // }
-    final userLoc = await location.getLocation();
-    print(userLoc);
-    PlacesLoc.googleLocation(userLoc.latitude!, userLoc.longitude!);
+  //   if (service) {
+  //     permission = await Geolocator.checkPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       // if permission is denied, ask for it
+  //       permission == await Geolocator.requestPermission();
+  //       if (permission == LocationPermission.denied) {
+  //         throw Future.error('Location permissions denied');
+  //       }
+  //     }
+  //   }
+  //   return permission;
+  // }
+
+  Future<void> _getLocation() async {
+    // _permissionCheck();
+    final userPos = await Geolocator.getCurrentPosition();
+    print(userPos);
+    final locImag =
+        PlacesLoc.googleLocation(userPos.latitude, userPos.longitude);
+    setState(() {
+      _locationImg = locImag;
+    });
+  }
+
+  Future<void> _showMap(context) async {
+    // final LatLng pickedLoc = await Navigator.of(context).push(MaterialPageRoute(
+    final pickedLoc =
+        await Navigator.of(context).push<LatLng>(MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (ctxt) => const GoogleMaps(isPicking: true),
+    ));
+    // this pickeLoc is what I will receive when I pop the GoogleMaps
+
+    if (pickedLoc == null) {
+      return;
+    }
+    print(pickedLoc);
   }
 
   @override
@@ -144,7 +174,7 @@ class _AddPlaceState extends State<AddPlace> {
                           label: const Text('Add Location'),
                         ),
                         TextButton.icon(
-                          onPressed: () {},
+                          onPressed: () => _showMap(context),
                           icon: const Icon(Icons.location_searching),
                           label: const Text('Select From Map'),
                         ),

@@ -38,6 +38,6 @@ class PlacesDB {
 
   static Future<List<Map<String, dynamic>>> getData(String tableName) async {
     final db = await PlacesDB.createDB();
-    return await db.query(tableName);
+    return db.query(tableName);
   }
 }
